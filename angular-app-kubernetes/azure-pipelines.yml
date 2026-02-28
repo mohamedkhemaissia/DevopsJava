@@ -1,5 +1,3 @@
-# Pipeline créé par Mohamed KHEMAISSIA - Examen Esprit Arctic2025
-
 trigger:
   - main
 
@@ -9,8 +7,32 @@ pool:
 steps:
   - task: NodeTool@0
     inputs:
-      versionSpec: '16.x'   # ← ici le changement clé
+      versionSpec: '16.x'
     displayName: 'Install Node.js'
+
+  - task: SonarCloudPrepare@3
+    inputs:
+      SonarCloud: 'SonarQube Cloud service'
+      organization: 'mohamedkhemaissia'
+      scannerMode: 'CLI'
+      configMode: 'manual'
+      cliProjectKey: 'mohamedkhemaissia_DevopsJava'
+      cliProjectName: 'DevopsJava Angular'
+      cliSources: '.'
+    displayName: 'Préparer SonarCloud'
+
+  - script: |
+      cd angular-app-kubernetes
+      sonar-scanner
+    displayName: 'Lancer SonarCloud Scan'
+
+  - task: SonarCloudAnalyze@3
+    displayName: 'Analyser avec SonarCloud'
+
+  - task: SonarCloudPublish@3
+    inputs:
+      pollingTimeoutSec: '300'
+    displayName: 'Publier résultats SonarCloud'
 
   - script: |
       cd angular-app-kubernetes
