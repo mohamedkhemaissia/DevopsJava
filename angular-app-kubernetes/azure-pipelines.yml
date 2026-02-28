@@ -13,7 +13,7 @@ steps:
     displayName: 'Install Node.js'
 
   - script: |
-      cd angular-app-kubernete
+      cd angular-app-kubernetes
       npm ci
       npm run build -- --configuration production
     displayName: 'Install dependencies and build Angular app'
