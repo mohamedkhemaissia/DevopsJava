@@ -5,7 +5,7 @@ pool:
   vmImage: 'ubuntu-latest'
 
 steps:
-  # 1. Spécifier la version de Java 17
+  # 1. Installation de Java 17 (obligatoire pour le scanner Sonar)
   - task: JavaToolInstaller@0
     inputs:
       versionSpec: '17'
@@ -13,42 +13,49 @@ steps:
       jdkSourceOption: 'PreInstalled'
     displayName: 'Installer Java 17'
 
+  # 2. Installation de Node.js
   - task: NodeTool@0
     inputs:
       versionSpec: '16.x'
     displayName: 'Install Node.js'
 
+  # 3. Préparation de SonarCloud
   - task: SonarCloudPrepare@3
     inputs:
-      SonarCloud: 'MonServiceSonarCloud'
+      SonarCloud: 'MonServiceSonarCloud' # <-- NOM EXACT DE VOTRE CONNEXION
       organization: 'mohamedkhemaissia'
       scannerMode: 'CLI'
       configMode: 'manual'
       cliProjectKey: 'mohamedkhemaissia_DevopsJava'
       cliProjectName: 'DevopsJava Angular'
-      # Force le scanner à chercher dans le bon dossier
+      # Indique le dossier racine du projet pour le scan
       extraProperties: |
         sonar.projectBaseDir=$(System.DefaultWorkingDirectory)/angular-app-kubernetes
     displayName: 'Préparer SonarCloud'
 
+  # 4. Installation des dépendances Angular
   - script: |
       cd angular-app-kubernetes
       npm ci
     displayName: 'Install dependencies'
 
+  # 5. Analyse SonarCloud
   - task: SonarCloudAnalyze@3
     displayName: 'Analyser avec SonarCloud'
 
+  # 6. Publication des résultats SonarCloud
   - task: SonarCloudPublish@3
     inputs:
       pollingTimeoutSec: '300'
     displayName: 'Publier résultats SonarCloud'
 
+  # 7. Build de l'application Angular
   - script: |
       cd angular-app-kubernetes
       npm run build -- --configuration production
     displayName: 'Build Angular app'
 
+  # 8. Publication de l'artéfact de build
   - task: PublishBuildArtifacts@1
     inputs:
       PathtoPublish: 'angular-app-kubernetes/dist/angular-app'
