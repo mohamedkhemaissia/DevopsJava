@@ -2,9 +2,10 @@ trigger:
   - main
 
 pool:
-  vmImage: ubuntu-latest
+  vmImage: 'ubuntu-latest'
 
 steps:
+  # 1. Spécifier la version de Java 17
   - task: JavaToolInstaller@0
     inputs:
       versionSpec: '17'
@@ -19,13 +20,13 @@ steps:
 
   - task: SonarCloudPrepare@3
     inputs:
-      SonarCloud: 'SonarQube Cloud service'
+      SonarCloud: 'MonServiceSonarCloud'
       organization: 'mohamedkhemaissia'
       scannerMode: 'CLI'
       configMode: 'manual'
       cliProjectKey: 'mohamedkhemaissia_DevopsJava'
       cliProjectName: 'DevopsJava Angular'
-      # Ajout explicite du chemin de base ici
+      # Force le scanner à chercher dans le bon dossier
       extraProperties: |
         sonar.projectBaseDir=$(System.DefaultWorkingDirectory)/angular-app-kubernetes
     displayName: 'Préparer SonarCloud'
