@@ -20,7 +20,7 @@ steps:
 
   - task: PublishBuildArtifacts@1
     inputs:
-      PathtoPublish: 'angular-app-kubernetes/dist/angular-app-kubernetes'
+      PathtoPublish: 'angular-app-kubernetes/dist/angular-app'
       ArtifactName: 'angular-build-dist'
       publishLocation: 'Container'
     displayName: 'Publier le build Angular comme artefact'
