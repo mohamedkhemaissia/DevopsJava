@@ -17,3 +17,10 @@ steps:
       npm ci
       npm run build -- --configuration production
     displayName: 'Install dependencies and build Angular app'
+
+  - task: PublishBuildArtifacts@1
+    inputs:
+      PathtoPublish: 'angular-app-kubernetes/dist/angular-app-kubernetes'
+      ArtifactName: 'angular-build-dist'
+      publishLocation: 'Container'
+    displayName: 'Publier le build Angular comme artefact'
