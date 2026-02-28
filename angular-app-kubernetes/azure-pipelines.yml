@@ -22,6 +22,12 @@ steps:
     displayName: 'Préparer SonarCloud'
 
   - script: |
+      curl -sL https://sonarcloud.io/static/cpp/sonar-scanner-5.0.1.3006-linux.zip -o sonar-scanner.zip
+      unzip sonar-scanner.zip
+      export PATH=$PATH:$PWD/sonar-scanner-5.0.1.3006-linux/bin
+    displayName: 'Installer sonar-scanner'
+
+  - script: |
       cd angular-app-kubernetes
       sonar-scanner
     displayName: 'Lancer SonarCloud Scan'
