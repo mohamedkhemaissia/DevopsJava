@@ -5,7 +5,6 @@ pool:
   vmImage: ubuntu-latest
 
 steps:
-  # 1. Spécifier la version de Java avant tout le reste
   - task: JavaToolInstaller@0
     inputs:
       versionSpec: '17'
@@ -26,7 +25,9 @@ steps:
       configMode: 'manual'
       cliProjectKey: 'mohamedkhemaissia_DevopsJava'
       cliProjectName: 'DevopsJava Angular'
-      cliSources: 'angular-app-kubernetes'
+      # Ajout explicite du chemin de base ici
+      extraProperties: |
+        sonar.projectBaseDir=$(System.DefaultWorkingDirectory)/angular-app-kubernetes
     displayName: 'Préparer SonarCloud'
 
   - script: |
