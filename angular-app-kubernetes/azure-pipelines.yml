@@ -18,19 +18,13 @@ steps:
       configMode: 'manual'
       cliProjectKey: 'mohamedkhemaissia_DevopsJava'
       cliProjectName: 'DevopsJava Angular'
-      cliSources: '.'
+      cliSources: 'angular-app-kubernetes'
     displayName: 'Préparer SonarCloud'
 
   - script: |
-      curl -sL https://sonarcloud.io/static/cpp/sonar-scanner-5.0.1.3006-linux.zip -o sonar-scanner.zip
-      unzip sonar-scanner.zip
-      export PATH=$PATH:$PWD/sonar-scanner-5.0.1.3006-linux/bin
-    displayName: 'Installer sonar-scanner'
-
-  - script: |
       cd angular-app-kubernetes
-      sonar-scanner
-    displayName: 'Lancer SonarCloud Scan'
+      npm ci
+    displayName: 'Install dependencies'
 
   - task: SonarCloudAnalyze@3
     displayName: 'Analyser avec SonarCloud'
@@ -42,9 +36,8 @@ steps:
 
   - script: |
       cd angular-app-kubernetes
-      npm ci
       npm run build -- --configuration production
-    displayName: 'Install dependencies and build Angular app'
+    displayName: 'Build Angular app'
 
   - task: PublishBuildArtifacts@1
     inputs:
