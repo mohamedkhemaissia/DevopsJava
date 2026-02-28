@@ -1,0 +1,19 @@
+# Pipeline créé par Mohamed KHEMAISSIA - Examen Esprit Arctic2025
+
+trigger:
+  - main
+
+pool:
+  vmImage: ubuntu-latest
+
+steps:
+  - task: NodeTool@0
+    inputs:
+      versionSpec: '20.x'
+    displayName: 'Install Node.js'
+
+  - script: |
+      cd angular-app-kubernete
+      npm ci
+      npm run build -- --configuration production
+    displayName: 'Install dependencies and build Angular app'
