@@ -1,0 +1,25 @@
+trigger:
+- main
+
+pool:
+  name: Default
+
+steps:
+- checkout: self
+
+- task: Docker@2
+  displayName: 'Build & push vers Docker Hub'
+  inputs:
+    containerRegistry: 'docker-hub-mohamed'
+    repository: 'medkhem1990/mohamedkhemaissia'
+    command: 'buildAndPush'
+    Dockerfile: '**/Dockerfile'
+    tags: '$(Build.BuildId), latest'
+
+- script: |
+    docker stop devopsjava-app || true
+    docker rm devopsjava-app || true
+    docker run -d --name devopsjava-app -p 8080:8080 medkhem1990/mohamedkhemaissia:latest
+    echo "App lancée sur http://localhost:8080"
+    docker ps
+  displayName: 'Déploiement local (docker run)'
