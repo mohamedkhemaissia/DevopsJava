@@ -2,21 +2,48 @@ trigger:
 - main
 
 pool:
-  vmImage: 'ubuntu-latest'   # ← agent gratuit d'Azure (pas ton agent local)
+  vmImage: 'ubuntu-latest'
 
 steps:
-- checkout: self
-
-- task: Docker@2
-  displayName: 'Build & push vers Docker Hub'
+- task: JavaToolInstaller@0
   inputs:
-    containerRegistry: 'docker-hub-mohamed'
-    repository: 'medkhem1990/mohamedkhemaissia'
-    command: 'buildAndPush'
-    Dockerfile: '**/Dockerfile'
-    tags: '$(Build.BuildId), latest'
+    versionSpec: '17'
+    jdkArchitectureOption: 'x64'
+    jdkSourceOption: 'PreInstalled'
+
+- task: SonarCloudPrepare@3
+  inputs:
+    SonarCloud: 'MonServiceSonarCloud'
+    organization: 'mohamedkhemaissia'
+    scannerMode: 'CLI'
+    configMode: 'manual'
+    cliProjectKey: 'mohamedkhemaissia_DevopsJava'
+    cliProjectName: 'DevopsJava Angular'
+    extraProperties: |
+      sonar.projectBaseDir=$(System.DefaultWorkingDirectory)/angular-app-kubernetes
 
 - script: |
-    echo "Pipeline terminé !"
-    
-  displayName: 'Instruction finale'
+    cd angular-app-kubernetes
+    npm ci
+    npm run build -- --configuration production
+  displayName: 'Build Angular App'
+
+- task: SonarCloudAnalyze@3
+
+- task: SonarCloudPublish@3
+
+- script: |
+    echo "$(DOCKER_PASSWORD)" | docker login -u $(DOCKER_USERNAME) --password-stdin
+  displayName: 'Login to Docker Hub'
+
+- script: |
+    docker build -t medkhem2019/angular-calculator:latest -f angular-app-kubernetes/Dockerfile ./angular-app-kubernetes
+  displayName: 'Build Docker Image'
+
+- script: |
+    docker push medkhem2019/angular-calculator:latest
+  displayName: 'Push Image to Docker Hub'
+
+- script: |
+    cat angular-app-kubernetes/deployment.yaml
+  displayName: 'Show Deployment YAML'
