@@ -37,11 +37,11 @@ steps:
   displayName: 'Login to Docker Hub'
 
 - script: |
-    docker build -t medkhem2019/angular-calculator:latest -f angular-app-kubernetes/Dockerfile ./angular-app-kubernetes
+    docker build -t medkhem1990/angular-calculator:latest -f angular-app-kubernetes/Dockerfile ./angular-app-kubernetes
   displayName: 'Build Docker Image'
 
 - script: |
-    docker push medkhem2019/angular-calculator:latest
+    docker push medkhem1990/angular-calculator:latest
   displayName: 'Push Image to Docker Hub'
 
 - script: |
