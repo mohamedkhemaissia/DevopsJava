@@ -1,0 +1,31 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: angular-calculator
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: angular-calculator
+  template:
+    metadata:
+      labels:
+        app: angular-calculator
+    spec:
+      containers:
+      - name: angular-calculator
+        image: medkhem2019/angular-calculator:latest
+        ports:
+        - containerPort: 80
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: angular-calculator-service
+spec:
+  type: LoadBalancer
+  ports:
+  - port: 80
+    targetPort: 80
+  selector:
+    app: angular-calculator
