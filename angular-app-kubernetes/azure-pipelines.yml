@@ -2,7 +2,7 @@ trigger:
 - main
 
 pool:
-  name: Default
+  vmImage: 'ubuntu-latest'   # ← agent gratuit d'Azure (pas ton agent local)
 
 steps:
 - checkout: self
@@ -17,9 +17,6 @@ steps:
     tags: '$(Build.BuildId), latest'
 
 - script: |
-    docker stop devopsjava-app || true
-    docker rm devopsjava-app || true
-    docker run -d --name devopsjava-app -p 8080:8080 medkhem1990/mohamedkhemaissia:latest
-    echo "App lancée sur http://localhost:8080"
-    docker ps
-  displayName: 'Déploiement local (docker run)'
+    echo "Pipeline terminé !"
+    
+  displayName: 'Instruction finale'
