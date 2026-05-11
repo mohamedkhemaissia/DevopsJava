@@ -1,0 +1,28 @@
+trigger:
+- main
+- dev
+
+pool:
+  vmImage: 'ubuntu-latest'
+
+steps:
+- task: NodeTool@0
+  inputs:
+    versionSpec: '10.x'
+  displayName: 'Install Node.js'
+
+- script: |
+    cd angular-app-kubernetes
+    npm install --legacy-peer-deps
+    npm run build --prod
+  displayName: 'Build Angular (Branch: $(Build.SourceBranchName))'
+
+- task: Docker@2
+  displayName: 'Build Docker Image'
+  inputs:
+    command: 'build'
+    dockerfile: 'angular-app-kubernetes/Dockerfile'
+    buildContext: 'angular-app-kubernetes'
+    tags: |
+      $(Build.SourceBranchName)-$(Build.BuildId)
+      latest
